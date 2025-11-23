@@ -1,17 +1,22 @@
 import { GoogleGenAI, Chat, Part } from "@google/genai";
 import { Message, Attachment } from '../types';
 
-// Initialize the client
-// API_KEY is expected to be in process.env.API_KEY
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 export const generateGeminiResponse = async (
+  apiKey: string,
+  modelId: string,
   currentHistory: Message[],
   newMessage: string,
   systemInstruction?: string,
   attachment?: Attachment
 ): Promise<string> => {
+  if (!apiKey || apiKey.trim() === '') {
+    throw new Error("Gemini API Key is missing. Please add it in Settings.");
+  }
+
   try {
+    // Initialize client with the specific key provided in settings
+    const ai = new GoogleGenAI({ apiKey });
+
     // Filter and format history to ensure valid parts
     const history = currentHistory.map(msg => {
       const parts: Part[] = [];
@@ -28,7 +33,7 @@ export const generateGeminiResponse = async (
         parts.push({ text: msg.text });
       }
       
-      // Fallback if a message in history ended up empty (should be prevented by UI, but safe to handle)
+      // Fallback if a message in history ended up empty
       if (parts.length === 0) {
         parts.push({ text: "..." });
       }
@@ -40,11 +45,10 @@ export const generateGeminiResponse = async (
     });
 
     const chat: Chat = ai.chats.create({
-      model: 'gemini-3-pro-preview',
+      model: modelId,
       history: history,
       config: {
         systemInstruction: systemInstruction,
-        thinkingConfig: { thinkingBudget: 2048 }
       }
     });
 
@@ -64,14 +68,10 @@ export const generateGeminiResponse = async (
       newParts.push({ text: newMessage });
     }
 
-    // Ensure we don't send an empty message
     if (newParts.length === 0) {
-        // This case implies user sent nothing (e.g. just a space), which UI should usually block.
-        // We send a non-empty string to satisfy the API requirement.
         newParts.push({ text: " " }); 
     }
 
-    // Use string for simple text messages, parts array for complex/multimodal
     const messageContent = (newParts.length === 1 && newParts[0].text) 
         ? newParts[0].text 
         : newParts;

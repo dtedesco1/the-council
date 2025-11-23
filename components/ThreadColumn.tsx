@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Thread, ModelConfig, Message } from '../types';
-import { FileText } from 'lucide-react';
+import { FileText, AlertOctagon } from 'lucide-react';
 
 interface ThreadColumnProps {
   model: ModelConfig;
@@ -75,7 +75,7 @@ const ThreadColumn: React.FC<ThreadColumnProps> = ({ model, thread }) => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [thread.messages.length, thread.isTyping]);
+  }, [thread.messages.length, thread.isTyping, thread.error]);
 
   return (
     <div className="flex flex-col h-full border-r border-gray-200 min-w-[300px] max-w-[400px] flex-1 bg-white">
@@ -112,8 +112,11 @@ const ThreadColumn: React.FC<ThreadColumnProps> = ({ model, thread }) => {
         )}
 
         {thread.error && (
-          <div className="p-2 bg-red-50 text-red-600 text-xs border border-red-100 rounded my-2">
-            Error: {thread.error}
+          <div className="p-3 bg-red-100 text-red-700 text-xs border border-red-300 rounded my-2 flex items-start gap-2 shadow-sm">
+            <AlertOctagon size={16} className="mt-0.5 flex-shrink-0" />
+            <div className="break-words font-medium">
+               {thread.error}
+            </div>
           </div>
         )}
       </div>

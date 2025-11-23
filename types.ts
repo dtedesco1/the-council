@@ -28,9 +28,24 @@ export interface Thread {
   error?: string;
 }
 
+export interface ApiKeys {
+  google: string;
+  openai: string;
+  anthropic: string;
+  xai: string;
+}
+
+export interface ApiEndpoints {
+  openai: string;
+  anthropic: string;
+  xai: string;
+}
+
 export interface AppSettings {
   systemPrompt: string;
   comparePromptTemplate: string;
+  apiKeys: ApiKeys;
+  apiEndpoints: ApiEndpoints;
 }
 
 export interface AppState {
