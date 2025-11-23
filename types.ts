@@ -19,6 +19,9 @@ export interface ModelConfig {
   name: string;
   provider: 'google' | 'anthropic' | 'openai' | 'xai';
   enabled: boolean;
+  // Optional overrides for custom endpoints (e.g. OpenRouter, LocalAI)
+  baseUrl?: string;
+  apiKey?: string;
 }
 
 export interface Thread {

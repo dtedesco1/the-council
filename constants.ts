@@ -35,25 +35,25 @@ export const XAI_BASE_URL = process.env.REACT_APP_XAI_BASE_URL || 'https://api.x
 const DEFAULT_MODELS: ModelConfig[] = [
   {
     id: process.env.REACT_APP_GEMINI_MODEL_ID || 'gemini-3-pro-preview', 
-    name: 'Gemini 3 Pro',
+    name: 'gemini-3-pro-preview',
     provider: 'google',
     enabled: true,
   },
   {
     id: process.env.REACT_APP_CLAUDE_MODEL_ID || 'claude-3-5-sonnet-latest', 
-    name: 'Claude 3.5 Sonnet',
+    name: 'claude-3-5-sonnet-latest',
     provider: 'anthropic',
     enabled: true,
   },
   {
     id: process.env.REACT_APP_GPT_MODEL_ID || 'gpt-4o',
-    name: 'GPT-4o',
+    name: 'gpt-4o',
     provider: 'openai',
     enabled: true,
   },
   {
     id: process.env.REACT_APP_GROK_MODEL_ID || 'grok-beta',
-    name: 'Grok Beta',
+    name: 'grok-beta',
     provider: 'xai',
     enabled: true,
   },

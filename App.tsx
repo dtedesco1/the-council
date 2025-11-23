@@ -76,9 +76,6 @@ export default function App() {
 
   // --- Helpers ---
   
-  // FIXED: This function now creates the thread entry if it doesn't exist.
-  // This prevents the "silent failure" / hanging bug when a new model is added
-  // but the threads state hasn't fully synchronized yet.
   const updateThread = (modelId: string, updater: (t: Thread) => Partial<Thread>) => {
     setThreads(prev => {
         const current = prev[modelId] || { modelId, messages: [], isTyping: false };
@@ -117,20 +114,27 @@ export default function App() {
     updateThread(model.id, () => ({ isTyping: true, error: undefined }));
 
     try {
-      // We fetch the CURRENT thread state from the setter to ensure we have the latest messages
-      // However, for simplicity in this async flow, we rely on 'threads' captured in closure 
-      // OR the contextOverride if provided (for global compare).
-      // A safer way for the history is to pull it from the state updater, but for now:
       const currentThread = threads[model.id] || { messages: [] };
-      
       const history = contextOverride || currentThread.messages;
       let responseText = "";
       
       console.log(`[OmniChat] Sending to ${model.name} (${model.provider}) ID: ${model.id}`);
 
+      // Determine Key and URL (Model Override > Global Setting)
+      const providerKey = model.apiKey || settings.apiKeys[model.provider];
+      
+      // Determine Endpoint
+      // For OpenAI-like providers (including xai, openrouter), we use the model.baseUrl first
+      let baseUrl = model.baseUrl;
+      if (!baseUrl) {
+          if (model.provider === 'openai') baseUrl = settings.apiEndpoints.openai;
+          else if (model.provider === 'anthropic') baseUrl = settings.apiEndpoints.anthropic;
+          else if (model.provider === 'xai') baseUrl = settings.apiEndpoints.xai;
+      }
+
       if (model.provider === 'google') {
         responseText = await generateGeminiResponse(
-            settings.apiKeys.google, 
+            providerKey, 
             model.id, 
             history, 
             text, 
@@ -138,10 +142,10 @@ export default function App() {
             attach
         );
       } 
-      else if (model.provider === 'openai') {
+      else if (model.provider === 'openai' || model.provider === 'xai') {
         responseText = await generateOpenAILikeResponse(
-            settings.apiEndpoints.openai, 
-            settings.apiKeys.openai, 
+            baseUrl || 'https://api.openai.com/v1', 
+            providerKey, 
             model.id, 
             history, 
             text, 
@@ -151,19 +155,8 @@ export default function App() {
       }
       else if (model.provider === 'anthropic') {
         responseText = await generateAnthropicResponse(
-            settings.apiEndpoints.anthropic, 
-            settings.apiKeys.anthropic, 
-            model.id, 
-            history, 
-            text, 
-            settings.systemPrompt, 
-            attach
-        );
-      }
-      else if (model.provider === 'xai') {
-        responseText = await generateOpenAILikeResponse(
-            settings.apiEndpoints.xai, 
-            settings.apiKeys.xai, 
+            baseUrl || 'https://api.anthropic.com/v1', 
+            providerKey, 
             model.id, 
             history, 
             text, 

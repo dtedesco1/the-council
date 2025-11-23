@@ -9,6 +9,7 @@ A single-page React application that allows you to communicate with multiple AI 
 - **Global Compare**: One-click feature to feed all other model responses into every model for critique and synthesis.
 - **Markdown Export**: Download entire conversation threads as a ZIP of Markdown files.
 - **Real API Integration**: Connects to OpenAI, Anthropic, and xAI (Grok) endpoints.
+- **Custom Providers**: Easily connect to OpenRouter, LiteLLM, or LocalAI using custom Base URLs.
 
 ## Setup
 
@@ -25,6 +26,18 @@ A single-page React application that allows you to communicate with multiple AI 
     npm run dev
     ```
     *   **IMPORTANT**: You must run this via Vite (`npm run dev` or `vite`) for the API proxies to work. This solves the CORS issues with Anthropic and OpenAI automatically.
+
+## How to Add Custom Models (OpenRouter, LiteLLM, etc.)
+
+1.  Open **Settings** -> **Models**.
+2.  Select **Protocol / Interface**: Choose `OpenAI Compatible`.
+3.  Expand **Custom Connection Details**.
+4.  **Base URL**: Enter your custom provider's URL (e.g., `https://openrouter.ai/api/v1`).
+5.  **API Key**: Enter the key for that provider.
+6.  **Model ID**: Enter the specific ID (e.g., `deepseek/deepseek-r1`).
+7.  Click **Add Model**.
+
+This allows you to mix official OpenAI models with models from other providers in the same interface.
 
 ## How CORS is Solved
 
