@@ -11,21 +11,27 @@ A single-page React application that allows you to communicate with multiple AI 
 - **Real API Integration**: Connects to OpenAI, Anthropic, and xAI (Grok) endpoints.
 - **Custom Providers**: Easily connect to OpenRouter, LiteLLM, or LocalAI using custom Base URLs.
 
-## Setup
+## Setup & Running Locally
 
 1.  **Clone the repository**.
 2.  **Install Dependencies**:
     ```bash
     npm install
     ```
-3.  **Environment Setup**:
-    *   Create a `.env` file.
-    *   Add your API Keys: `REACT_APP_OPENAI_API_KEY`, `REACT_APP_ANTHROPIC_API_KEY`, `REACT_APP_GEMINI_API_KEY`, `REACT_APP_XAI_API_KEY`.
-4.  **Run Locally**:
+3.  **Configure Environment**:
+    *   Rename `env-example.txt` to `.env`.
+    *   Open `.env` and add your API keys (e.g., `VITE_OPENAI_API_KEY`, `VITE_GEMINI_API_KEY`).
+    *   The app will automatically read these values when you start it.
+4.  **Run the App**:
     ```bash
     npm run dev
     ```
-    *   **IMPORTANT**: You must run this via Vite (`npm run dev` or `vite`) for the API proxies to work. This solves the CORS issues with Anthropic and OpenAI automatically.
+    *   **Note**: For Anthropic and standard OpenAI endpoints to work without CORS errors, we recommend using the local proxy or LiteLLM (see below), or ensuring your browser allows cross-origin requests.
+    *   To use the built-in local proxy, set your Base URLs in `.env` to:
+        ```
+        VITE_ANTHROPIC_BASE_URL=/api/anthropic
+        VITE_OPENAI_BASE_URL=/api/openai
+        ```
 
 ## How to Add Custom Models (OpenRouter, LiteLLM, etc.)
 
@@ -38,14 +44,6 @@ A single-page React application that allows you to communicate with multiple AI 
 7.  Click **Add Model**.
 
 This allows you to mix official OpenAI models with models from other providers in the same interface.
-
-## How CORS is Solved
-
-This project uses a `vite.config.ts` file to proxy requests:
-- Requests to `/api/anthropic` -> Forwarded to `https://api.anthropic.com/v1`
-- Requests to `/api/openai` -> Forwarded to `https://api.openai.com/v1`
-
-This bypasses browser security restrictions allowing you to use the real APIs from `localhost` seamlessly.
 
 ## Tech Stack
 

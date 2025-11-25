@@ -1,58 +1,41 @@
+
 import { ModelConfig, AppSettings } from './types';
-
-// Helper to parse JSON config if available
-const getEnvModelConfig = (): ModelConfig[] | null => {
-  try {
-    const configStr = process.env.REACT_APP_MODEL_CONFIG;
-    if (configStr) {
-      return JSON.parse(configStr) as ModelConfig[];
-    }
-  } catch (e) {
-    console.error("Failed to parse REACT_APP_MODEL_CONFIG", e);
-  }
-  return null;
-};
-
-// Added export for MOCK_DELAY_MS
-export const MOCK_DELAY_MS = 1000;
+import { getEnv, getEnvModelConfig } from './utils/env';
 
 // API Configurations
-export const GOOGLE_API_KEY = process.env.REACT_APP_GEMINI_API_KEY || process.env.API_KEY || '';
+export const GOOGLE_API_KEY = getEnv('VITE_GEMINI_API_KEY');
 
-// Reverting to REAL endpoints. 
-// If CORS issues occur, the user must use a local proxy or LiteLLM, 
-// but we default to the standard URLs so it works out-of-the-box for non-browser-blocked providers.
-export const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY || '';
-export const OPENAI_BASE_URL = process.env.REACT_APP_OPENAI_BASE_URL || 'https://api.openai.com/v1';
+export const OPENAI_API_KEY = getEnv('VITE_OPENAI_API_KEY');
+export const OPENAI_BASE_URL = getEnv('VITE_OPENAI_BASE_URL') || 'https://api.openai.com/v1';
 
-export const ANTHROPIC_API_KEY = process.env.REACT_APP_ANTHROPIC_API_KEY || '';
-export const ANTHROPIC_BASE_URL = process.env.REACT_APP_ANTHROPIC_BASE_URL || 'https://api.anthropic.com/v1';
+export const ANTHROPIC_API_KEY = getEnv('VITE_ANTHROPIC_API_KEY');
+export const ANTHROPIC_BASE_URL = getEnv('VITE_ANTHROPIC_BASE_URL') || 'https://api.anthropic.com/v1';
 
-export const XAI_API_KEY = process.env.REACT_APP_XAI_API_KEY || '';
-export const XAI_BASE_URL = process.env.REACT_APP_XAI_BASE_URL || 'https://api.x.ai/v1';
+export const XAI_API_KEY = getEnv('VITE_XAI_API_KEY');
+export const XAI_BASE_URL = getEnv('VITE_XAI_BASE_URL') || 'https://api.x.ai/v1';
 
 // Default config using REAL, CURRENTLY AVAILABLE Model IDs
 const DEFAULT_MODELS: ModelConfig[] = [
   {
-    id: process.env.REACT_APP_GEMINI_MODEL_ID || 'gemini-3-pro-preview', 
+    id: getEnv('VITE_GEMINI_MODEL_ID') || 'gemini-3-pro-preview', 
     name: 'gemini-3-pro-preview',
     provider: 'google',
     enabled: true,
   },
   {
-    id: process.env.REACT_APP_CLAUDE_MODEL_ID || 'claude-3-5-sonnet-latest', 
+    id: getEnv('VITE_CLAUDE_MODEL_ID') || 'claude-3-5-sonnet-latest', 
     name: 'claude-3-5-sonnet-latest',
     provider: 'anthropic',
     enabled: true,
   },
   {
-    id: process.env.REACT_APP_GPT_MODEL_ID || 'gpt-4o',
+    id: getEnv('VITE_GPT_MODEL_ID') || 'gpt-4o',
     name: 'gpt-4o',
     provider: 'openai',
     enabled: true,
   },
   {
-    id: process.env.REACT_APP_GROK_MODEL_ID || 'grok-beta',
+    id: getEnv('VITE_GROK_MODEL_ID') || 'grok-beta',
     name: 'grok-beta',
     provider: 'xai',
     enabled: true,

@@ -1,0 +1,42 @@
+# OmniChat Environment Configuration
+# Rename this file to '.env' and fill in your values.
+# These values will be loaded automatically when running 'npm run dev'.
+
+# --- API Keys ---
+# Google AI Studio Key (for Gemini models)
+VITE_GEMINI_API_KEY=
+
+# OpenAI API Key
+VITE_OPENAI_API_KEY=
+
+# Anthropic API Key
+VITE_ANTHROPIC_API_KEY=
+
+# xAI (Grok) API Key
+VITE_XAI_API_KEY=
+
+# --- Base URLs (Optional) ---
+# Use these to point to local proxies, OpenRouter, or other compatible endpoints.
+# If using the local Vite proxy (npm run dev), use the relative paths shown below.
+# If using direct connections (and you have a way to handle CORS), use the full URLs.
+
+# Default: https://api.openai.com/v1 (Or /api/openai for local proxy)
+VITE_OPENAI_BASE_URL=https://api.openai.com/v1
+
+# Default: https://api.anthropic.com/v1 (Or /api/anthropic for local proxy)
+VITE_ANTHROPIC_BASE_URL=https://api.anthropic.com/v1
+
+# Default: https://api.x.ai/v1 (Or /api/xai for local proxy)
+VITE_XAI_BASE_URL=https://api.x.ai/v1
+
+# --- Default Model Overrides (Optional) ---
+# Specify which models to load by default.
+VITE_GEMINI_MODEL_ID=gemini-3-pro-preview
+VITE_CLAUDE_MODEL_ID=claude-3-5-sonnet-latest
+VITE_GPT_MODEL_ID=gpt-4o
+VITE_GROK_MODEL_ID=grok-beta
+
+# --- Advanced Configuration (Optional) ---
+# Inject a full JSON array of model configurations to override defaults entirely.
+# Example: [{"id":"deepseek/deepseek-r1","name":"DeepSeek R1","provider":"openai","enabled":true,"baseUrl":"https://openrouter.ai/api/v1"}]
+# VITE_MODEL_CONFIG=

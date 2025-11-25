@@ -35,23 +35,24 @@ const CollapsibleMessage: React.FC<{ msg: Message }> = ({ msg }) => {
         )}
 
         <div className={`${!expanded && isLong ? 'line-clamp-3 max-h-[4.5em] overflow-hidden' : ''}`}>
-             <ReactMarkdown 
-                className="prose prose-sm max-w-none prose-p:my-1 prose-headings:my-2"
-                components={{
-                    code({node, className, children, ...props}: any) {
-                        return (
-                            <code className={`${className} bg-gray-100 px-1 py-0.5 rounded text-xs font-mono`} {...props}>
-                                {children}
-                            </code>
-                        )
-                    },
-                    pre({children}) {
-                        return <pre className="bg-gray-50 p-2 rounded overflow-x-auto my-2 text-xs">{children}</pre>
-                    }
-                }}
-              >
-                {msg.text}
-              </ReactMarkdown>
+             <div className="prose prose-sm max-w-none prose-p:my-1 prose-headings:my-2">
+                <ReactMarkdown 
+                    components={{
+                        code({node, className, children, ...props}: any) {
+                            return (
+                                <code className={`${className} bg-gray-100 px-1 py-0.5 rounded text-xs font-mono`} {...props}>
+                                    {children}
+                                </code>
+                            )
+                        },
+                        pre({children}) {
+                            return <pre className="bg-gray-50 p-2 rounded overflow-x-auto my-2 text-xs">{children}</pre>
+                        }
+                    }}
+                >
+                    {msg.text}
+                </ReactMarkdown>
+             </div>
         </div>
 
         {isLong && (
