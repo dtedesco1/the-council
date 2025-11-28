@@ -149,8 +149,10 @@ export class AnthropicProvider implements ILLMProvider {
                     'Content-Type': 'application/json',
                     'x-api-key': apiKey,
                     'anthropic-version': '2023-06-01',
-                    // This header is required for browser access but may not prevent CORS issues
-                    'anthropic-dangerously-allow-browser': 'true'
+                    // Required header for direct browser access to Anthropic API
+                    // This header name changed in Aug 2024 from 'anthropic-dangerously-allow-browser'
+                    // to 'anthropic-dangerous-direct-browser-access'
+                    'anthropic-dangerous-direct-browser-access': 'true'
                 },
                 body: JSON.stringify({
                     model: modelId,
