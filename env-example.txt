@@ -1,0 +1,71 @@
+# ╔═══════════════════════════════════════════════════════════════════════════╗
+# ║                    OMNICHAT ENVIRONMENT CONFIGURATION                      ║
+# ║                                                                             ║
+# ║  This file is the SINGLE SOURCE OF TRUTH for all application configuration ║
+# ║  Rename this file to '.env' and fill in your values.                       ║
+# ║  The app will load these values automatically when running 'npm run dev'.  ║
+# ╚═══════════════════════════════════════════════════════════════════════════╝
+
+# ══════════════════════════════════════════════════════════════════════════════
+# MODEL IDs (REQUIRED)
+# ══════════════════════════════════════════════════════════════════════════════
+# These are REQUIRED - the app will fail to start if these are not set.
+# Specify the exact model ID to use for each provider.
+#
+# Examples:
+#   - Gemini: gemini-2.0-flash-exp, gemini-1.5-pro, gemini-1.5-flash
+#   - Claude: claude-3-5-sonnet-latest, claude-3-opus-20240229, claude-3-haiku-20240307
+#   - GPT: gpt-4o, gpt-4-turbo, gpt-3.5-turbo
+#   - Grok: grok-beta, grok-2
+#
+VITE_GEMINI_MODEL_ID=gemini-2.0-flash-exp
+VITE_CLAUDE_MODEL_ID=claude-3-5-sonnet-latest
+VITE_GPT_MODEL_ID=gpt-4o
+VITE_GROK_MODEL_ID=grok-beta
+
+# ══════════════════════════════════════════════════════════════════════════════
+# API KEYS (Optional but needed to use the corresponding provider)
+# ══════════════════════════════════════════════════════════════════════════════
+# Get your API keys from:
+#   - Google AI Studio: https://aistudio.google.com/apikey
+#   - OpenAI: https://platform.openai.com/api-keys
+#   - Anthropic: https://console.anthropic.com/settings/keys
+#   - xAI: https://console.x.ai/
+#
+VITE_GEMINI_API_KEY=
+VITE_OPENAI_API_KEY=
+VITE_ANTHROPIC_API_KEY=
+VITE_XAI_API_KEY=
+
+# ══════════════════════════════════════════════════════════════════════════════
+# BASE URLs (Optional - defaults to standard API endpoints)
+# ══════════════════════════════════════════════════════════════════════════════
+# Use these to point to local proxies, OpenRouter, or other compatible endpoints.
+# If using the local Vite proxy (npm run dev), use the relative paths shown below.
+# If using direct connections, use the full URLs.
+#
+# Defaults:
+#   - OpenAI: https://api.openai.com/v1
+#   - Anthropic: https://api.anthropic.com/v1
+#   - xAI: https://api.x.ai/v1
+#
+# For local proxy (handles CORS):
+#   VITE_OPENAI_BASE_URL=/api/openai
+#   VITE_ANTHROPIC_BASE_URL=/api/anthropic
+#   VITE_XAI_BASE_URL=/api/xai
+#
+VITE_OPENAI_BASE_URL=https://api.openai.com/v1
+VITE_ANTHROPIC_BASE_URL=https://api.anthropic.com/v1
+VITE_XAI_BASE_URL=https://api.x.ai/v1
+
+# ══════════════════════════════════════════════════════════════════════════════
+# ADVANCED: Full Model Configuration Override (Optional)
+# ══════════════════════════════════════════════════════════════════════════════
+# Inject a full JSON array of model configurations to override defaults entirely.
+# This is for advanced users who want complete control over the model list.
+# If set, this overrides the individual VITE_*_MODEL_ID settings above.
+#
+# Example:
+# VITE_MODEL_CONFIG=[{"id":"deepseek/deepseek-r1","name":"DeepSeek R1","provider":"openai","enabled":true,"baseUrl":"https://openrouter.ai/api/v1"}]
+#
+# VITE_MODEL_CONFIG=

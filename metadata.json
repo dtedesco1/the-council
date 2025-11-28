@@ -1,0 +1,5 @@
+{
+  "name": "The Council",
+  "description": "A multi-model chat interface allowing side-by-side comparison of Gemini, Claude, GPT, and Grok, with cross-model critique capabilities.",
+  "requestFramePermissions": []
+}
