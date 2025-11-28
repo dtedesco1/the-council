@@ -13,7 +13,7 @@
  */
 
 import { GoogleGenAI, Chat, Part } from "@google/genai";
-import { ILLMProvider, GenerateOptions } from "../types";
+import { ILLMProvider, GenerateOptions, GenerateResponse } from "../types";
 
 export class GoogleProvider implements ILLMProvider {
   id = 'google';
@@ -22,10 +22,10 @@ export class GoogleProvider implements ILLMProvider {
    * Generates a response from Gemini using the Google AI SDK.
    *
    * @param options - Generation options including API key, model, history, etc.
-   * @returns The generated text response
+   * @returns GenerateResponse with text and token usage from API
    * @throws Error if API call fails or returns an error
    */
-  async generateResponse(options: GenerateOptions): Promise<string> {
+  async generateResponse(options: GenerateOptions): Promise<GenerateResponse> {
     const { apiKey, modelId, history: currentHistory, newMessage, systemInstruction, attachment } = options;
 
     if (!apiKey || apiKey.trim() === '') {
@@ -122,8 +122,20 @@ export class GoogleProvider implements ILLMProvider {
       const result = await chat.sendMessage({ message: messageContent });
 
       if (result.text) {
+        // Extract token usage directly from API response
+        const usageMetadata = result.usageMetadata;
+        const usage = usageMetadata ? {
+          inputTokens: usageMetadata.promptTokenCount ?? 0,
+          outputTokens: usageMetadata.candidatesTokenCount ?? 0,
+          totalTokens: usageMetadata.totalTokenCount ?? 0
+        } : undefined;
+
+        if (usage) {
+          console.log(`[Gemini] Tokens: ${usage.inputTokens} in, ${usage.outputTokens} out, ${usage.totalTokens} total`);
+        }
+
         console.log(`[Gemini] Response received: ${result.text.length} chars`);
-        return result.text;
+        return { text: result.text, usage };
       }
 
       console.warn('[Gemini] No text in response');

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ModelConfig, Thread, AppSettings, Message, Attachment } from '../types';
+import { ModelConfig, Thread, AppSettings, Message, Attachment, TokenUsage } from '../types';
 import { INITIAL_MODELS, INITIAL_SETTINGS } from '../constants';
 
 /**
@@ -199,7 +199,7 @@ export function useChatState() {
             let changed = false;
             models.forEach(m => {
                 if (!next[m.id]) {
-                    next[m.id] = { modelId: m.id, messages: [], isTyping: false };
+                    next[m.id] = { modelId: m.id, messages: [], isTyping: false, totalTokens: 0 };
                     changed = true;
                 }
             });
@@ -210,17 +210,33 @@ export function useChatState() {
     // Actions
     const updateThread = (modelId: string, fn: (t: Thread) => Partial<Thread>) => {
         setThreads(prev => {
-            const t = prev[modelId] || { modelId, messages: [], isTyping: false };
+            const t = prev[modelId] || { modelId, messages: [], isTyping: false, totalTokens: 0 };
             return { ...prev, [modelId]: { ...t, ...fn(t) } };
         });
     };
 
-    const addMessage = (modelId: string, text: string, role: 'user' | 'model', attach?: Attachment) => {
+    /**
+     * Adds a message to a thread.
+     * For model responses, optionally includes token usage from the API response.
+     * Token usage is accumulated in the thread's totalTokens.
+     */
+    const addMessage = (
+        modelId: string,
+        text: string,
+        role: 'user' | 'model',
+        attach?: Attachment,
+        usage?: TokenUsage
+    ) => {
         const msg: Message = {
             id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-            role, text, timestamp: Date.now(), attachment: attach
+            role, text, timestamp: Date.now(), attachment: attach,
+            usage: role === 'model' ? usage : undefined
         };
-        updateThread(modelId, (t) => ({ messages: [...t.messages, msg] }));
+        updateThread(modelId, (t) => ({
+            messages: [...t.messages, msg],
+            // Accumulate tokens from API response
+            totalTokens: t.totalTokens + (usage?.totalTokens ?? 0)
+        }));
         return msg;
     };
 

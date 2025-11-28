@@ -9,7 +9,7 @@
  * - Images (.png, .jpg, etc.): Sent as base64-encoded image_url for vision models
  */
 
-import { ILLMProvider, GenerateOptions } from "../types";
+import { ILLMProvider, GenerateOptions, GenerateResponse } from "../types";
 import { isTextBasedMime, isImageMime, decodeBase64Text } from "../../../utils/files";
 
 export class OpenAIProvider implements ILLMProvider {
@@ -19,10 +19,10 @@ export class OpenAIProvider implements ILLMProvider {
      * Generates a response from an OpenAI-compatible API.
      *
      * @param options - Generation options including API key, model, history, etc.
-     * @returns The generated text response
+     * @returns GenerateResponse with text and token usage from API
      * @throws Error if API call fails or returns an error
      */
-    async generateResponse(options: GenerateOptions): Promise<string> {
+    async generateResponse(options: GenerateOptions): Promise<GenerateResponse> {
         const { apiKey, baseUrl, modelId, history, newMessage, systemInstruction, attachment } = options;
 
         if (!apiKey) {
@@ -127,11 +127,22 @@ export class OpenAIProvider implements ILLMProvider {
 
             if (!content) {
                 console.warn('[OpenAI] No content in response:', data);
-                return "No response content received.";
+                return { text: "No response content received." };
+            }
+
+            // Extract token usage directly from API response
+            const usage = data.usage ? {
+                inputTokens: data.usage.prompt_tokens ?? 0,
+                outputTokens: data.usage.completion_tokens ?? 0,
+                totalTokens: data.usage.total_tokens ?? 0
+            } : undefined;
+
+            if (usage) {
+                console.log(`[OpenAI] Tokens: ${usage.inputTokens} in, ${usage.outputTokens} out, ${usage.totalTokens} total`);
             }
 
             console.log(`[OpenAI] Response received: ${content.length} chars`);
-            return content;
+            return { text: content, usage };
 
         } catch (error: any) {
             console.error('[OpenAI] Request failed:', error);

@@ -38,7 +38,7 @@ export default function App() {
                 if (model.provider === 'xai') baseUrl = settings.apiEndpoints.xai;
             }
 
-            const responseText = await provider.generateResponse({
+            const response = await provider.generateResponse({
                 modelId: model.id,
                 apiKey,
                 baseUrl,
@@ -48,7 +48,8 @@ export default function App() {
                 attachment: attach
             });
 
-            addMessage(model.id, responseText, 'model');
+            // Add message with token usage from API response
+            addMessage(model.id, response.text, 'model', undefined, response.usage);
 
         } catch (err: any) {
             updateThread(modelId, () => ({ error: err.message || "Unknown error" }));

@@ -12,7 +12,7 @@
  * 3. Use a compatible endpoint like OpenRouter that supports browser access
  */
 
-import { ILLMProvider, GenerateOptions } from "../types";
+import { ILLMProvider, GenerateOptions, GenerateResponse } from "../types";
 import { Message, Attachment } from "../../../types";
 import { isTextBasedMime, isImageMime, decodeBase64Text } from "../../../utils/files";
 
@@ -114,10 +114,10 @@ export class AnthropicProvider implements ILLMProvider {
      * Generates a response from Claude using the Anthropic API.
      *
      * @param options - Generation options including API key, model, history, etc.
-     * @returns The generated text response
+     * @returns GenerateResponse with text and token usage from API
      * @throws Error if API call fails or returns an error
      */
-    async generateResponse(options: GenerateOptions): Promise<string> {
+    async generateResponse(options: GenerateOptions): Promise<GenerateResponse> {
         const { apiKey, baseUrl, modelId, history, newMessage, systemInstruction, attachment } = options;
 
         if (!apiKey) {
@@ -179,11 +179,22 @@ export class AnthropicProvider implements ILLMProvider {
 
             if (!textBlock?.text) {
                 console.warn('[Anthropic] No text content in response:', data);
-                return "No text response received from Claude.";
+                return { text: "No text response received from Claude." };
+            }
+
+            // Extract token usage directly from API response
+            const usage = data.usage ? {
+                inputTokens: data.usage.input_tokens ?? 0,
+                outputTokens: data.usage.output_tokens ?? 0,
+                totalTokens: (data.usage.input_tokens ?? 0) + (data.usage.output_tokens ?? 0)
+            } : undefined;
+
+            if (usage) {
+                console.log(`[Anthropic] Tokens: ${usage.inputTokens} in, ${usage.outputTokens} out, ${usage.totalTokens} total`);
             }
 
             console.log(`[Anthropic] Response received: ${textBlock.text.length} chars`);
-            return textBlock.text;
+            return { text: textBlock.text, usage };
 
         } catch (error: any) {
             console.error('[Anthropic] Request failed:', error);
