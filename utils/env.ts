@@ -94,7 +94,7 @@ export const logEnvLoadStatus = (): void => {
   });
 
   // API Keys (masked for security)
-  const apiKeyVars = ['VITE_GEMINI_API_KEY', 'VITE_OPENAI_API_KEY', 'VITE_ANTHROPIC_API_KEY', 'VITE_XAI_API_KEY'];
+  const apiKeyVars = ['VITE_GEMINI_API_KEY', 'VITE_OPENAI_API_KEY', 'VITE_ANTHROPIC_API_KEY', 'VITE_XAI_API_KEY', 'VITE_OPENROUTER_API_KEY'];
   console.log('[env] API Keys:');
   apiKeyVars.forEach(key => {
     const value = getEnv(key);
@@ -103,7 +103,7 @@ export const logEnvLoadStatus = (): void => {
   });
 
   // Base URLs
-  const urlVars = ['VITE_OPENAI_BASE_URL', 'VITE_ANTHROPIC_BASE_URL', 'VITE_XAI_BASE_URL'];
+  const urlVars = ['VITE_OPENAI_BASE_URL', 'VITE_ANTHROPIC_BASE_URL', 'VITE_XAI_BASE_URL', 'VITE_OPENROUTER_BASE_URL'];
   console.log('[env] Base URLs:');
   urlVars.forEach(key => {
     const value = getEnv(key);

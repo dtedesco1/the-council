@@ -48,6 +48,13 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/xai/, ''),
         secure: true,
+      },
+      // OpenRouter API Proxy (Image Gen)
+      '/api/openrouter': {
+        target: 'https://openrouter.ai/api/v1',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/openrouter/, ''),
+        secure: true,
       }
     }
   }

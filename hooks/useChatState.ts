@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ModelConfig, Thread, AppSettings, Message, Attachment, TokenUsage } from '../types';
+import { ModelConfig, Thread, AppSettings, Message, Attachment, TokenUsage, StudioSettings, ViewMode, ImageGeneration } from '../types';
 import { INITIAL_MODELS, INITIAL_SETTINGS } from '../constants';
 
 /**
@@ -160,6 +160,21 @@ export function useChatState() {
     // Threads (Derived from models, not persisted intentionally for now)
     const [threads, setThreads] = useState<Record<string, Thread>>({});
 
+    // Studio State
+    const [gallery, setGallery] = useState<ImageGeneration[]>([]);
+    const [viewMode, setViewMode] = useState<ViewMode>('chat');
+    const [studioSettings, setStudioSettings] = useState<StudioSettings>({
+        imageCount: 1,
+        aspectRatio: '1:1',
+        videoMode: false,
+        imageModelIds: {
+            google: 'gemini-3-pro-image-preview', // Default (Nano Banana Pro)
+            openai: 'gpt-image-1.5',
+            xai: 'grok-2-image-latest',
+            openrouter: '' // User must select a model or it will default to empty
+        }
+    });
+
     /**
      * Persistence effects.
      *
@@ -243,6 +258,9 @@ export function useChatState() {
     return {
         models, setModels,
         settings, setSettings,
-        threads, updateThread, addMessage
+        threads, updateThread, addMessage,
+        gallery, setGallery,
+        viewMode, setViewMode,
+        studioSettings, setStudioSettings
     };
 }

@@ -41,7 +41,8 @@ export interface Message {
 export interface ModelConfig {
   id: string;
   name: string;
-  provider: 'google' | 'anthropic' | 'openai' | 'xai';
+  provider: 'google' | 'anthropic' | 'openai' | 'xai' | 'openrouter';
+  capabilities: ('text' | 'image' | 'video')[];
   enabled: boolean;
   // Optional overrides for custom endpoints (e.g. OpenRouter, LocalAI)
   baseUrl?: string;
@@ -61,17 +62,50 @@ export interface Thread {
   totalTokens: number;
 }
 
+export interface ImageGeneration {
+  id: string;
+  url: string;
+  mimeType: string; // 'image/png', 'image/jpeg', 'video/mp4'
+  prompt: string;
+  modelId: string;
+  timestamp: number;
+  metadata?: {
+    width: number;
+    height: number;
+    seed?: number;
+    revisedPrompt?: string;
+  };
+}
+
+export interface StudioSettings {
+  imageCount: number; // 1-4
+  aspectRatio: '1:1' | '16:9' | '9:16' | '4:3';
+  style?: string; // vivid, natural
+  videoMode?: boolean; // Filter for video models
+  // User-configurable Model IDs
+  imageModelIds: {
+    google: string;
+    openai: string;
+    xai: string;
+    openrouter: string;
+  };
+}
+
+export type ViewMode = 'chat' | 'studio';
+
 export interface ApiKeys {
   google: string;
   openai: string;
   anthropic: string;
   xai: string;
+  openrouter: string;
 }
 
 export interface ApiEndpoints {
   openai: string;
   anthropic: string;
   xai: string;
+  openrouter: string;
 }
 
 export interface AppSettings {
@@ -84,5 +118,8 @@ export interface AppSettings {
 export interface AppState {
   models: ModelConfig[];
   threads: Record<string, Thread>;
+  gallery: ImageGeneration[];
+  studioSettings: StudioSettings;
+  viewMode: ViewMode;
   settings: AppSettings;
 }

@@ -29,10 +29,16 @@ logEnvLoadStatus();
 // Users may not have API keys for all providers, so these are optional.
 // The app will show an error only when trying to use a provider without a key.
 // ============================================================================
+// ============================================================================
+// API KEYS (Optional - empty string if not set)
+// Users may not have API keys for all providers, so these are optional.
+// The app will show an error only when trying to use a provider without a key.
+// ============================================================================
 export const GOOGLE_API_KEY = getEnv('VITE_GEMINI_API_KEY');
 export const OPENAI_API_KEY = getEnv('VITE_OPENAI_API_KEY');
 export const ANTHROPIC_API_KEY = getEnv('VITE_ANTHROPIC_API_KEY');
 export const XAI_API_KEY = getEnv('VITE_XAI_API_KEY');
+export const OPENROUTER_API_KEY = getEnv('VITE_OPENROUTER_API_KEY');
 
 // ============================================================================
 // BASE URLS (Optional - use standard endpoints if not set)
@@ -42,6 +48,7 @@ export const XAI_API_KEY = getEnv('VITE_XAI_API_KEY');
 export const OPENAI_BASE_URL = getEnv('VITE_OPENAI_BASE_URL') || 'https://api.openai.com/v1';
 export const ANTHROPIC_BASE_URL = getEnv('VITE_ANTHROPIC_BASE_URL') || 'https://api.anthropic.com/v1';
 export const XAI_BASE_URL = getEnv('VITE_XAI_BASE_URL') || 'https://api.x.ai/v1';
+export const OPENROUTER_BASE_URL = getEnv('VITE_OPENROUTER_BASE_URL') || 'https://openrouter.ai/api/v1';
 
 // ============================================================================
 // MODEL IDs (REQUIRED - must be set in .env file)
@@ -53,6 +60,10 @@ const GEMINI_MODEL_ID = getRequiredEnv('VITE_GEMINI_MODEL_ID');
 const CLAUDE_MODEL_ID = getRequiredEnv('VITE_CLAUDE_MODEL_ID');
 const GPT_MODEL_ID = getRequiredEnv('VITE_GPT_MODEL_ID');
 const GROK_MODEL_ID = getRequiredEnv('VITE_GROK_MODEL_ID');
+
+const GEMINI_IMAGE_MODEL_ID = getRequiredEnv('VITE_GEMINI_IMAGE_MODEL_ID');
+const GPT_IMAGE_MODEL_ID = getRequiredEnv('VITE_GPT_IMAGE_MODEL_ID');
+const GROK_IMAGE_MODEL_ID = getRequiredEnv('VITE_GROK_IMAGE_MODEL_ID');
 
 // ============================================================================
 // VALIDATE REQUIRED ENVIRONMENT VARIABLES
@@ -69,36 +80,61 @@ validateRequiredEnvVars();
 const DEFAULT_MODELS: ModelConfig[] = [
   {
     id: GEMINI_MODEL_ID,
-    name: GEMINI_MODEL_ID, // Name matches ID from .env - single source of truth
+    name: GEMINI_MODEL_ID,
     provider: 'google',
+    capabilities: ['text'],
     enabled: true,
   },
   {
     id: CLAUDE_MODEL_ID,
-    name: CLAUDE_MODEL_ID, // Name matches ID from .env - single source of truth
+    name: CLAUDE_MODEL_ID,
     provider: 'anthropic',
+    capabilities: ['text'],
     enabled: true,
   },
   {
     id: GPT_MODEL_ID,
-    name: GPT_MODEL_ID, // Name matches ID from .env - single source of truth
+    name: GPT_MODEL_ID,
     provider: 'openai',
+    capabilities: ['text'],
     enabled: true,
   },
   {
     id: GROK_MODEL_ID,
-    name: GROK_MODEL_ID, // Name matches ID from .env - single source of truth
+    name: GROK_MODEL_ID,
     provider: 'xai',
+    capabilities: ['text'],
+    enabled: true,
+  },
+  // Image Models
+  {
+    id: GEMINI_IMAGE_MODEL_ID,
+    name: 'Nano Banana Pro',
+    provider: 'google',
+    capabilities: ['image', 'video'],
+    enabled: true,
+  },
+  {
+    id: GPT_IMAGE_MODEL_ID,
+    name: 'GPT Image 1.5',
+    provider: 'openai',
+    capabilities: ['image'],
+    enabled: true,
+  },
+  {
+    id: GROK_IMAGE_MODEL_ID,
+    name: 'Grok Images',
+    provider: 'xai',
+    capabilities: ['image', 'video'],
     enabled: true,
   },
 ];
-
-// ============================================================================
 // EXPORTED INITIAL MODELS
-// Uses VITE_MODEL_CONFIG JSON override if provided, otherwise uses DEFAULT_MODELS.
-// This allows advanced users to completely customize the model list via .env.
+// Merges DEFAULT_MODELS with any custom configurations from VITE_MODEL_CONFIG.
+// Custom models are appended to the list.
 // ============================================================================
-export const INITIAL_MODELS: ModelConfig[] = getEnvModelConfig() || DEFAULT_MODELS;
+const customModels = getEnvModelConfig() || [];
+export const INITIAL_MODELS: ModelConfig[] = [...DEFAULT_MODELS, ...customModels];
 
 console.log('[constants] Loaded models from .env:', INITIAL_MODELS.map(m => `${m.provider}:${m.id}`).join(', '));
 
@@ -131,12 +167,14 @@ export const INITIAL_SETTINGS: AppSettings = {
     google: GOOGLE_API_KEY,
     openai: OPENAI_API_KEY,
     anthropic: ANTHROPIC_API_KEY,
-    xai: XAI_API_KEY
+    xai: XAI_API_KEY,
+    openrouter: OPENROUTER_API_KEY
   },
   apiEndpoints: {
     openai: OPENAI_BASE_URL,
     anthropic: ANTHROPIC_BASE_URL,
-    xai: XAI_BASE_URL
+    xai: XAI_BASE_URL,
+    openrouter: OPENROUTER_BASE_URL
   }
 };
 

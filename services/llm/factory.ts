@@ -14,6 +14,7 @@ export const getProvider = (providerName: string): ILLMProvider => {
         case 'anthropic': return anthropic;
         case 'openai': return openai;
         case 'xai': return openai; // xAI uses OpenAI format
+        case 'openrouter': return openai; // OpenRouter uses OpenAI format
         default: return openai; // Default fallback for generic 'openai-compatible'
     }
 };

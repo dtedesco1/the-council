@@ -18,10 +18,15 @@
 #   - GPT: gpt-4o, gpt-4-turbo, gpt-3.5-turbo
 #   - Grok: grok-beta, grok-2
 #
-VITE_GEMINI_MODEL_ID=gemini-2.0-flash-exp
-VITE_CLAUDE_MODEL_ID=claude-3-5-sonnet-latest
-VITE_GPT_MODEL_ID=gpt-4o
-VITE_GROK_MODEL_ID=grok-beta
+VITE_GEMINI_MODEL_ID=gemini-3-pro
+VITE_CLAUDE_MODEL_ID=claude-3-7-sonnet-20251120
+VITE_GPT_MODEL_ID=gpt-5-turbo
+VITE_GROK_MODEL_ID=grok-3-beta
+
+# Image Models (User Specified Dec 2025)
+VITE_GEMINI_IMAGE_MODEL_ID=gemini-3-pro-image-preview
+VITE_GPT_IMAGE_MODEL_ID=gpt-image-1.5
+VITE_GROK_IMAGE_MODEL_ID=grok-2-image-latest
 
 # ══════════════════════════════════════════════════════════════════════════════
 # API KEYS (Optional but needed to use the corresponding provider)
@@ -36,6 +41,7 @@ VITE_GEMINI_API_KEY=
 VITE_OPENAI_API_KEY=
 VITE_ANTHROPIC_API_KEY=
 VITE_XAI_API_KEY=
+VITE_OPENROUTER_API_KEY=
 
 # ══════════════════════════════════════════════════════════════════════════════
 # BASE URLs (Optional - defaults to standard API endpoints)
@@ -65,7 +71,16 @@ VITE_XAI_BASE_URL=https://api.x.ai/v1
 # This is for advanced users who want complete control over the model list.
 # If set, this overrides the individual VITE_*_MODEL_ID settings above.
 #
-# Example:
-# VITE_MODEL_CONFIG=[{"id":"deepseek/deepseek-r1","name":"DeepSeek R1","provider":"openai","enabled":true,"baseUrl":"https://openrouter.ai/api/v1"}]
+# Example (MUST BE WRAPPED IN SINGLE QUOTES TO HANDLE SPACES CORRECTLY):
+#
+# VITE_MODEL_CONFIG='[{"id":"sourceful/riverflow-v2-standard-preview","name":"Sourceful Flow","provider":"openrouter","enabled":true,"baseUrl":"https://openrouter.ai/api/v1","capabilities":["image"]}]'
+#
+# PROPERTIES:
+# - id: The model ID string
+# - name: Display name in the UI
+# - provider: 'openai', 'anthropic', 'google', 'xai', or 'openrouter'
+# - enabled: true/false
+# - capabilities: ["text", "image", "video"] (CRITICAL: Must include 'image' to show in Studio)
+# - baseUrl: Optional override for endpoint
 #
 # VITE_MODEL_CONFIG=
