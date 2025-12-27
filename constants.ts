@@ -109,21 +109,21 @@ const DEFAULT_MODELS: ModelConfig[] = [
   // Image Models
   {
     id: GEMINI_IMAGE_MODEL_ID,
-    name: 'Nano Banana Pro',
+    name: GEMINI_IMAGE_MODEL_ID,
     provider: 'google',
     capabilities: ['image', 'video'],
     enabled: true,
   },
   {
     id: GPT_IMAGE_MODEL_ID,
-    name: 'GPT Image 1.5',
+    name: GPT_IMAGE_MODEL_ID,
     provider: 'openai',
     capabilities: ['image'],
     enabled: true,
   },
   {
     id: GROK_IMAGE_MODEL_ID,
-    name: 'Grok Images',
+    name: GROK_IMAGE_MODEL_ID,
     provider: 'xai',
     capabilities: ['image', 'video'],
     enabled: true,
