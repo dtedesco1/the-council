@@ -130,7 +130,7 @@ export default function StudioLayout({ models, state, onUpdateSettings, onAddGal
     return (
         <div className="flex flex-col h-full bg-gray-100">
             {/* Main Canvas / Grid */}
-            <div className="flex-1 overflow-x-auto overflow-y-hidden">
+            <div className="flex-1 overflow-x-auto overflow-y-hidden snap-x snap-mandatory">
                 <div className="h-full flex gap-px">
                     {activeModels.length === 0 ? (
                         <div className="flex-1 flex flex-col items-center justify-center text-gray-400">

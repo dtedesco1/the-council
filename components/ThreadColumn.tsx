@@ -22,8 +22,8 @@ const CollapsibleMessage: React.FC<{ msg: Message }> = ({ msg }) => {
 
       <div
         className={`relative rounded-sm p-3 text-sm leading-relaxed ${msg.role === 'user'
-            ? 'bg-slate-100 text-slate-800 ml-auto'
-            : 'bg-white border border-gray-200 text-gray-800 mr-auto'
+          ? 'bg-slate-100 text-slate-800 ml-auto'
+          : 'bg-white border border-gray-200 text-gray-800 mr-auto'
           }`}
       >
         {msg.attachment && (
@@ -78,7 +78,7 @@ const ThreadColumn: React.FC<ThreadColumnProps> = ({ model, thread }) => {
   }, [thread.messages.length, thread.isTyping, thread.error]);
 
   return (
-    <div className="flex flex-col h-full border-r border-gray-200 min-w-[300px] max-w-[400px] flex-1 bg-white">
+    <div className="flex flex-col h-full border-r border-gray-200 min-w-[85vw] md:min-w-[300px] md:max-w-[400px] flex-1 bg-white snap-center">
       {/* Header with model name and token count */}
       <div className="p-2 border-b border-gray-200 bg-gray-50 flex items-center justify-between sticky top-0 z-10 h-10">
         <div className="flex items-center gap-2">

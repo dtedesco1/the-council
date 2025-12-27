@@ -149,17 +149,17 @@ export default function App() {
 
     // --- Render ---
     return (
-        <div className="flex flex-col h-screen bg-gray-100">
+        <div className="flex flex-col h-screen md:h-screen supports-[height:100dvh]:h-[100dvh] bg-gray-100">
             <SettingsModal
                 isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)}
                 models={models} settings={settings} studioSettings={studioSettings}
                 onUpdateModels={setModels} onUpdateSettings={setSettings} onUpdateStudioSettings={setStudioSettings}
             />
 
-            <header className="bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between z-30">
+            <header className="bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between z-30 flex-shrink-0">
                 <div className="font-bold text-gray-800 flex items-center gap-2">
                     <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white">C</div>
-                    The Council
+                    <span className="hidden md:inline">The Council</span>
                 </div>
 
                 {/* Mode Switcher */}
@@ -183,7 +183,7 @@ export default function App() {
 
             {viewMode === 'chat' ? (
                 <>
-                    <main className="flex-1 overflow-x-auto overflow-y-hidden bg-gray-100">
+                    <main className="flex-1 overflow-x-auto overflow-y-hidden bg-gray-100 snap-x snap-mandatory">
                         <div className="h-full flex gap-px">
                             {activeTextModels.length === 0 ? (
                                 <div className="flex-1 flex flex-col items-center justify-center text-gray-400 gap-4">
@@ -199,14 +199,14 @@ export default function App() {
                         </div>
                     </main>
 
-                    <footer className="bg-white border-t border-gray-200 z-20 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
-                        <div className="bg-gray-50 border-b border-gray-200 px-4 py-2 flex items-center justify-between text-xs">
+                    <footer className="bg-white border-t border-gray-200 z-20 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] flex-shrink-0">
+                        <div className="bg-gray-50 border-b border-gray-200 px-3 py-2 flex items-center justify-between text-xs">
                             <div className="flex gap-2">
                                 <button onClick={handleGlobalCompare} disabled={activeTextModels.length < 2} className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-indigo-50 hover:text-indigo-600 disabled:opacity-50">
-                                    <GitCompare size={14} /> <span>Global Compare</span>
+                                    <GitCompare size={14} /> <span className="hidden sm:inline">Global Compare</span>
                                 </button>
                                 <button onClick={handleGlobalDownload} disabled={!activeTextModels.length} className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-green-50 hover:text-green-600 disabled:opacity-50">
-                                    <Download size={14} /> <span>Download All</span>
+                                    <Download size={14} /> <span className="hidden sm:inline">Download All</span>
                                 </button>
                             </div>
                             <div className="text-gray-400 font-medium">{activeTextModels.length} Active</div>

@@ -21,7 +21,7 @@ export default function StudioColumn({ model, messages, isGenerating, onRefine }
     }, [messages, isGenerating]);
 
     return (
-        <div className="flex flex-col min-w-[320px] max-w-[400px] h-full border-r border-gray-200 bg-gray-50/50">
+        <div className="flex flex-col min-w-[85vw] md:min-w-[320px] md:max-w-[400px] h-full border-r border-gray-200 bg-gray-50/50 snap-center">
             {/* Header */}
             <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-white sticky top-0 z-10">
                 <div className="flex items-center gap-2">
