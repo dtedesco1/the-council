@@ -25,7 +25,7 @@ VITE_GROK_MODEL_ID=grok-3-beta
 
 # Image Models (User Specified Dec 2025)
 VITE_GEMINI_IMAGE_MODEL_ID=gemini-3-pro-image-preview
-VITE_GPT_IMAGE_MODEL_ID=gpt-image-1.5
+VITE_GPT_IMAGE_MODEL_ID=gpt-image-1
 VITE_GROK_IMAGE_MODEL_ID=grok-2-image-latest
 
 # ══════════════════════════════════════════════════════════════════════════════

@@ -15,7 +15,7 @@ export default function App() {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const activeModels = models.filter(m => m.enabled);
+    const activeTextModels = models.filter(m => m.enabled && m.capabilities.includes('text'));
 
     // --- Core Business Logic ---
 
@@ -59,7 +59,7 @@ export default function App() {
     };
 
     const handleSend = useCallback(async () => {
-        if ((!input.trim() && !attachment) || activeModels.length === 0) return;
+        if ((!input.trim() && !attachment) || activeTextModels.length === 0) return;
         const txt = input;
         const att = attachment;
 
@@ -67,17 +67,17 @@ export default function App() {
         setAttachment(undefined);
         if (fileInputRef.current) fileInputRef.current.value = '';
 
-        activeModels.forEach(m => {
+        activeTextModels.forEach(m => {
             addMessage(m.id, txt, 'user', att);
             sendMessageToModel(m.id, txt, att);
         });
-    }, [input, attachment, activeModels, threads, settings]);
+    }, [input, attachment, activeTextModels, threads, settings]);
 
     const handleGlobalCompare = async () => {
-        if (activeModels.length < 2) return alert("Activate at least 2 models.");
+        if (activeTextModels.length < 2) return alert("Activate at least 2 models.");
 
-        activeModels.forEach(target => {
-            const others = activeModels.filter(m => m.id !== target.id)
+        activeTextModels.forEach(target => {
+            const others = activeTextModels.filter(m => m.id !== target.id)
                 .map(m => {
                     const msgs = threads[m.id]?.messages || [];
                     const last = msgs[msgs.length - 1];
@@ -96,7 +96,7 @@ export default function App() {
         const zip = new JSZip();
         const folder = zip.folder("omnichat_export");
 
-        activeModels.forEach(m => {
+        activeTextModels.forEach(m => {
             const thread = threads[m.id];
             if (!thread?.messages.length) return;
             const content = thread.messages.map(msg => {
@@ -185,14 +185,14 @@ export default function App() {
                 <>
                     <main className="flex-1 overflow-x-auto overflow-y-hidden bg-gray-100">
                         <div className="h-full flex gap-px">
-                            {activeModels.length === 0 ? (
+                            {activeTextModels.length === 0 ? (
                                 <div className="flex-1 flex flex-col items-center justify-center text-gray-400 gap-4">
                                     <AlertTriangle size={48} className="text-gray-300" />
                                     <p>No active models selected.</p>
                                     <button onClick={() => setIsSettingsOpen(true)} className="text-blue-600 hover:underline">Configure Settings</button>
                                 </div>
                             ) : (
-                                activeModels.map(m => (
+                                activeTextModels.map(m => (
                                     <ThreadColumn key={m.id} model={m} thread={threads[m.id] || { modelId: m.id, messages: [], isTyping: false, totalTokens: 0 }} />
                                 ))
                             )}
@@ -202,14 +202,14 @@ export default function App() {
                     <footer className="bg-white border-t border-gray-200 z-20 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
                         <div className="bg-gray-50 border-b border-gray-200 px-4 py-2 flex items-center justify-between text-xs">
                             <div className="flex gap-2">
-                                <button onClick={handleGlobalCompare} disabled={activeModels.length < 2} className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-indigo-50 hover:text-indigo-600 disabled:opacity-50">
+                                <button onClick={handleGlobalCompare} disabled={activeTextModels.length < 2} className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-indigo-50 hover:text-indigo-600 disabled:opacity-50">
                                     <GitCompare size={14} /> <span>Global Compare</span>
                                 </button>
-                                <button onClick={handleGlobalDownload} disabled={!activeModels.length} className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-green-50 hover:text-green-600 disabled:opacity-50">
+                                <button onClick={handleGlobalDownload} disabled={!activeTextModels.length} className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-green-50 hover:text-green-600 disabled:opacity-50">
                                     <Download size={14} /> <span>Download All</span>
                                 </button>
                             </div>
-                            <div className="text-gray-400 font-medium">{activeModels.length} Active</div>
+                            <div className="text-gray-400 font-medium">{activeTextModels.length} Active</div>
                         </div>
 
                         <div className="p-4 max-w-6xl mx-auto flex gap-3 items-end">

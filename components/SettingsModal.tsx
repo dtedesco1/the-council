@@ -14,12 +14,12 @@ interface SettingsModalProps {
   onUpdateStudioSettings: (s: StudioSettings) => void;
 }
 
-type Tab = 'models' | 'studio' | 'connections' | 'prompts';
+type Tab = 'chat_models' | 'image_models' | 'studio_config' | 'connections' | 'prompts';
 
 const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen, onClose, models, settings, studioSettings, onUpdateModels, onUpdateSettings, onUpdateStudioSettings
 }) => {
-  const [activeTab, setActiveTab] = useState<Tab>('studio');
+  const [activeTab, setActiveTab] = useState<Tab>('chat_models');
 
   // State for new model form
   const [newModelProvider, setNewModelProvider] = useState<'google' | 'openai' | 'anthropic'>('openai');
@@ -28,6 +28,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   const [customBaseUrl, setCustomBaseUrl] = useState('');
   const [customApiKey, setCustomApiKey] = useState('');
   const [showAdvancedAdd, setShowAdvancedAdd] = useState(false);
+  const [newModelType, setNewModelType] = useState<'text' | 'image'>('text'); // For adding custom models
 
   const [showAdvancedGlobal, setShowAdvancedGlobal] = useState(false);
 
@@ -89,7 +90,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       enabled: true,
       baseUrl: customBaseUrl.trim() || undefined,
       apiKey: customApiKey.trim() || undefined,
-      capabilities: ['text']
+      capabilities: [newModelType] // Use selected type
     };
 
     if (models.some(m => m.id === modelToAdd.id)) {
@@ -113,9 +114,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     }
   };
 
+  // Filter models for display
+  const chatModels = models.filter(m => m.capabilities.includes('text'));
+  const imageModels = models.filter(m => m.capabilities.includes('image'));
+
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[85vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col">
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-white">
@@ -128,22 +133,28 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         {/* Tabs */}
         <div className="flex border-b border-gray-200 bg-gray-50/50 px-6 overflow-x-auto">
           <button
-            onClick={() => setActiveTab('studio')}
-            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'studio' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+            onClick={() => setActiveTab('chat_models')}
+            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'chat_models' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
           >
-            <ImageIcon size={16} /> Studio Models
+            <Cpu size={16} /> Chat Models
+          </button>
+          <button
+            onClick={() => setActiveTab('image_models')}
+            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'image_models' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+          >
+            <ImageIcon size={16} /> Image Models
+          </button>
+          <button
+            onClick={() => setActiveTab('studio_config')}
+            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'studio_config' ? 'border-slate-800 text-slate-800' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+          >
+            <ImageIcon size={16} /> Studio defaults
           </button>
           <button
             onClick={() => setActiveTab('connections')}
             className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'connections' ? 'border-slate-800 text-slate-800' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
           >
             <Link size={16} /> Global Keys
-          </button>
-          <button
-            onClick={() => setActiveTab('models')}
-            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'models' ? 'border-slate-800 text-slate-800' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
-          >
-            <Cpu size={16} /> Chat Models
           </button>
           <button
             onClick={() => setActiveTab('prompts')}
@@ -156,18 +167,18 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30">
 
-          {/* --- STUDIO MODELS TAB --- */}
-          {activeTab === 'studio' && (
+          {/* --- STUDIO CONFIG TAB --- */}
+          {activeTab === 'studio_config' && (
             <div className="space-y-6">
               <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-100 text-xs text-indigo-800 flex gap-2">
                 <ImageIcon size={16} className="flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold mb-1">Image Generation Configuration</p>
-                  <p>These specific model IDs are used for the standard generation calls in Studio mode. Ensure your API keys in the "Global Keys" tab have access to them.</p>
+                  <p className="font-bold mb-1">Studio Default Configuration</p>
+                  <p>These model IDs are used by the Studio app when the specific providers are invoked. Ensure the corresponding models are enabled in the 'Image Models' tab for them to appear in the Studio.</p>
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-white p-4 rounded-lg border border-gray-200">
                   <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
                     <div className="w-2 h-2 rounded-full bg-blue-500" />
@@ -193,9 +204,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     value={studioSettings.imageModelIds?.openai || ''}
                     onChange={(e) => updateStudioModelId('openai', e.target.value)}
                     className="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none font-mono"
-                    placeholder="gpt-image-1.5"
+                    placeholder="gpt-image-1"
                   />
-                  <p className="text-[10px] text-gray-400 mt-1.5">Note: Use 'gpt-image-1.5' for optimal results. 'dall-e-3' uses different parameters.</p>
+                  <p className="text-[10px] text-gray-400 mt-1.5">Note: Use 'gpt-image-1' for optimal results.</p>
                 </div>
 
                 <div className="bg-white p-4 rounded-lg border border-gray-200">
@@ -210,7 +221,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     className="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-slate-500 outline-none font-mono"
                     placeholder="grok-2-image-latest"
                   />
-                  <p className="text-[10px] text-gray-400 mt-1.5">Supports Grok 2 Image models.</p>
                 </div>
 
                 <div className="bg-white p-4 rounded-lg border border-gray-200">
@@ -223,9 +233,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     value={studioSettings.imageModelIds?.openrouter || ''}
                     onChange={(e) => updateStudioModelId('openrouter' as any, e.target.value)}
                     className="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none font-mono"
-                    placeholder="sourceful/... (Optional)"
+                    placeholder="sourceful/..."
                   />
-                  <p className="text-[10px] text-gray-400 mt-1.5">Leave empty to use model specific ID if configured via VITE_MODEL_CONFIG</p>
                 </div>
               </div>
             </div>
@@ -341,11 +350,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           )}
 
-          {/* --- MODELS TAB --- */}
-          {activeTab === 'models' && (
+          {/* --- MODEL TABS (Combined Structure) --- */}
+          {(activeTab === 'chat_models' || activeTab === 'image_models') && (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-gray-600">Active Models</h3>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-gray-600">
+                  {activeTab === 'chat_models' ? 'Active Chat Models' : 'Active Image Models'}
+                </h3>
                 <button onClick={handleResetModels} className="text-xs flex items-center gap-1 text-gray-400 hover:text-red-500 transition-colors">
                   <RefreshCw size={12} /> Reset to Defaults
                 </button>
@@ -354,8 +365,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               {/* Add New Model Form */}
               <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm space-y-4">
                 <h4 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <Plus size={16} /> Add Custom Model
+                  <Plus size={16} /> Add Custom {activeTab === 'chat_models' ? 'Chat' : 'Image'} Model
                 </h4>
+                {/* Auto-set type based on active tab */}
+                {(() => {
+                  if (activeTab === 'chat_models' && newModelType !== 'text') setNewModelType('text');
+                  if (activeTab === 'image_models' && newModelType !== 'image') setNewModelType('image');
+                  return null;
+                })()}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -437,7 +454,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 </button>
               </div>
 
-              {/* Existing Models List */}
+              {/* Models List */}
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
                 <table className="w-full text-sm text-left">
                   <thead className="bg-gray-50 text-xs uppercase text-gray-500 font-medium">
@@ -449,7 +466,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {models.map((m) => (
+                    {(activeTab === 'chat_models' ? chatModels : imageModels).map((m) => (
                       <tr key={m.id} className="hover:bg-gray-50 transition-colors">
                         <td className="px-4 py-3">
                           <input
@@ -487,6 +504,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                         </td>
                       </tr>
                     ))}
+                    {/* Empty State */}
+                    {(activeTab === 'chat_models' ? chatModels : imageModels).length === 0 && (
+                      <tr>
+                        <td colSpan={4} className="px-4 py-8 text-center text-gray-400 italic">
+                          No models found. Add one above.
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>

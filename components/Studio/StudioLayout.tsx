@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ModelConfig, AppState, Attachment, ImageGeneration, StudioSettings } from '../../types';
 import StudioColumn from './StudioColumn';
 import StudioControls from './StudioControls';
-import { getImageProvider } from '../../services/llm/imageGen';
+import { getImageProvider } from '../../services/llm/image';
 import { Paperclip, X, Send, Sparkles, Settings } from 'lucide-react'; // Import Settings icon
 
 interface StudioLayoutProps {

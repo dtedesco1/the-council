@@ -169,7 +169,7 @@ export function useChatState() {
         videoMode: false,
         imageModelIds: {
             google: 'gemini-3-pro-image-preview', // Default (Nano Banana Pro)
-            openai: 'gpt-image-1.5',
+            openai: 'gpt-image-1',
             xai: 'grok-2-image-latest',
             openrouter: '' // User must select a model or it will default to empty
         }
